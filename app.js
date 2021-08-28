@@ -3,7 +3,7 @@ const express = require("express");
 
 //?constants
 const app = express();
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 3000
 
 //?instance route
 app.get("/", (req, res) => {
