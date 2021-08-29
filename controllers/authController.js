@@ -8,7 +8,7 @@ exports.signupGetController = (req, res, next) => {
         title: "Create A New Account",
         error: { },
         value: { },
-        isLoggedIn: req.session.isLoggedIn
+        // isLoggedIn: req.session.isLoggedIn
     })
 }
 
@@ -21,7 +21,7 @@ exports.signupPostController = async (req, res, next) => {
             title: "Create An Account",
             error: error.mapped(),
             value: { username, email },
-            isLoggedIn: req.session.isLoggedIn
+            // isLoggedIn: req.session.isLoggedIn
         })
     }
 
@@ -37,12 +37,10 @@ exports.signupPostController = async (req, res, next) => {
         //? adding user
         let createUser = await user.save();
         console.log("Created user", createUser)
-        res.render('pages/auth/login',
+        res.render('pages/dashboard/dashboard',
             {
                 title: "Log in page",
-                error: { },
-                value: { email },
-                isLoggedIn: req.session.isLoggedIn
+                // isLoggedIn: req.session.isLoggedIn
             }
         )
     } catch (error) {
@@ -55,7 +53,7 @@ exports.loginGetController = (req, res, next) => {
         title: "Log in to your account",
         error: { },
         value: { },
-        isLoggedIn: req.session.isLoggedIn
+        // isLoggedIn: req.session.isLoggedIn
     });
 }
 
@@ -68,7 +66,7 @@ exports.loginPostController = async (req, res, next) => {
             title: "Log in page",
             error: error.mapped(),
             value: { email },
-            isLoggedIn: req.session.isLoggedIn
+            // isLoggedIn: req.session.isLoggedIn
         })
     }
     try {
@@ -102,6 +100,12 @@ exports.loginPostController = async (req, res, next) => {
     }
 }
 
-exports.logoutController = (req, res, next) => {
-
+exports.logoutController = async (req, res, next) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.log(err)
+            return next(err)
+        }
+        return res.redirect('/auth/login')
+    })
 }
