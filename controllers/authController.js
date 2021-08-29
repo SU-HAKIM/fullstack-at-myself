@@ -37,9 +37,11 @@ exports.signupPostController = async (req, res, next) => {
         //? adding user
         let createUser = await user.save();
         console.log("Created user", createUser)
-        res.render('pages/dashboard/dashboard',
+        res.render('pages/auth/login',
             {
                 title: "Log in page",
+                error: { },
+                value: { },
                 // isLoggedIn: req.session.isLoggedIn
             }
         )
@@ -87,12 +89,8 @@ exports.loginPostController = async (req, res, next) => {
             if (err) {
                 console.log(err)
             }
-            res.redirect('/auth/login')
+            res.redirect('/dashboard')
         })
-        // res.render("pages/dashboard/dashboard", {
-        //     title: 'my dashboard',
-        //     isLoggedIn: req.session.isLoggedIn
-        // })
 
     } catch (error) {
         console.log(error)

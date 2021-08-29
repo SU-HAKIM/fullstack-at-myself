@@ -10,12 +10,13 @@ const {
 
 const loginValidator = require("../validator/loginValidator");
 const signupValidator = require("../validator/signupValidator");
+const { isUnauthenticated } = require('../middleware/isUnauthenticated');
 
-router.get('/signup', signupGetController);
+router.get('/signup', isUnauthenticated, signupGetController);
 
 router.post('/signup', signupValidator, signupPostController);
 
-router.get('/login', loginGetController);
+router.get('/login', isUnauthenticated, loginGetController);
 
 router.post('/login', loginValidator, loginPostController);
 
