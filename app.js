@@ -9,6 +9,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const authRoutes = require("./routes/authRouter");
 const { bindUserWithRequest } = require("./middleware/authMiddleware");
 const setLocals = require("./middleware/setLocals");
+const dashboardRoute = require('./routes/dashboardRoute');
 
 //?constants
 const app = express();
@@ -44,7 +45,9 @@ const middleware = [
 
 app.use(middleware);
 
+//routes
 app.use('/auth', authRoutes)
+app.use('/dashboard', dashboardRoute);
 
 //?instance route
 app.get("/", (req, res) => {
