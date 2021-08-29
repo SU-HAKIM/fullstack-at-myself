@@ -8,7 +8,7 @@ exports.signupGetController = (req, res, next) => {
         title: "Create A New Account",
         error: { },
         value: { },
-        isLoggedIn: false //req.session.isLoggedIn
+        isLoggedIn: req.session.isLoggedIn
     })
 }
 
@@ -21,7 +21,7 @@ exports.signupPostController = async (req, res, next) => {
             title: "Create An Account",
             error: error.mapped(),
             value: { username, email },
-            isLoggedIn: false
+            isLoggedIn: req.session.isLoggedIn
         })
     }
 
@@ -42,7 +42,7 @@ exports.signupPostController = async (req, res, next) => {
                 title: "Log in page",
                 error: { },
                 value: { email },
-                isLoggedIn: false//req.session.isLoggedIn
+                isLoggedIn: req.session.isLoggedIn
             }
         )
     } catch (error) {
@@ -55,7 +55,7 @@ exports.loginGetController = (req, res, next) => {
         title: "Log in to your account",
         error: { },
         value: { },
-        isLoggedIn: false//req.session.isLoggedIn
+        isLoggedIn: req.session.isLoggedIn
     });
 }
 
@@ -68,7 +68,7 @@ exports.loginPostController = async (req, res, next) => {
             title: "Log in page",
             error: error.mapped(),
             value: { email },
-            isLoggedIn: false
+            isLoggedIn: req.session.isLoggedIn
         })
     }
     try {
@@ -83,10 +83,18 @@ exports.loginPostController = async (req, res, next) => {
             return res.json({ message: "user not found" })
         }
 
-        res.render("pages/dashboard/dashboard", {
-            title: 'my dashboard',
-            isLoggedIn: false//req.session.isLoggedIn
+        req.session.isLoggedIn = true
+        req.session.user = user
+        req.session.save(err => {
+            if (err) {
+                console.log(err)
+            }
+            res.redirect('/auth/login')
         })
+        // res.render("pages/dashboard/dashboard", {
+        //     title: 'my dashboard',
+        //     isLoggedIn: req.session.isLoggedIn
+        // })
 
     } catch (error) {
         console.log(error)

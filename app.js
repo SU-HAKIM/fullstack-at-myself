@@ -4,10 +4,19 @@ const morgan = require('morgan');
 const authRoutes = require("./routes/authRouter");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 //?constants
 const app = express();
 const PORT = process.env.PORT || 8080
+const MONGODB_URI = 'mongodb://localhost:27017/users';
+
+
+//?SESSION STORE
+const store = new MongoDBStore({
+    uri: MONGODB_URI,
+    collection: 'sessions'
+})
 
 //?view engine
 app.set("view engine", "ejs");
@@ -20,7 +29,10 @@ const middleware = [
     express.urlencoded({ extended: true }),
     express.static("public"),
     session({
-        secret: process.env.SECRET_KEY || "SECRET_KEY"
+        secret: process.env.SECRET_KEY || "SECRET_KEY",
+        resave: false,
+        saveUninitialized: false,
+        store: store
     })
 ]
 
@@ -40,7 +52,7 @@ app.get("/", (req, res) => {
 })
 
 
-mongoose.connect('mongodb://localhost:27017/users',
+mongoose.connect(MONGODB_URI,
     {
         useNewUrlParser: true
     })
