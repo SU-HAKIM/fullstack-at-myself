@@ -1,10 +1,14 @@
 //? external dependencies
 const express = require("express");
 const morgan = require('morgan');
-const authRoutes = require("./routes/authRouter");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require('connect-mongodb-session')(session);
+
+//?internal imports
+const authRoutes = require("./routes/authRouter");
+const { bindUserWithRequest } = require("./middleware/authMiddleware");
+const setLocals = require("./middleware/setLocals");
 
 //?constants
 const app = express();
@@ -33,7 +37,9 @@ const middleware = [
         resave: false,
         saveUninitialized: false,
         store: store
-    })
+    }),
+    bindUserWithRequest(),
+    setLocals()
 ]
 
 app.use(middleware);
