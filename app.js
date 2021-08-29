@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 
 //?constants
 const app = express();
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 5500
 
 //?view engine
 app.set("view engine", "ejs");
@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
 })
 
 
-mongoose.connect('mongodb://localhost:27017/hakim',
+mongoose.connect('mongodb://localhost:27017/users',
     {
         useNewUrlParser: true
     })

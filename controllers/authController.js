@@ -4,14 +4,14 @@ const { validationResult } = require("express-validator");
 const errorFormatter = require("../utils/validationErrorFormatter");
 
 exports.signupGetController = (req, res, next) => {
-    res.render("pages/auth/signup"), {
+    res.render("pages/auth/signup", {
         title: "Create A New Account",
         error: { },
         value: { },
-        isLoggedIn: req.session.isLoggedIn
-    }
-
+        isLoggedIn: false //req.session.isLoggedIn
+    })
 }
+
 exports.signupPostController = async (req, res, next) => {
     let { username, email, password } = req.body;
     let error = validationResult(req).formatWith(errorFormatter);
@@ -19,7 +19,7 @@ exports.signupPostController = async (req, res, next) => {
     if (!error.isEmpty) {
         return res.render("pages/auth/signup", {
             title: "Create An Account",
-            error,
+            error: error.mapped(),
             value: { username, email }
         })
     }
@@ -28,7 +28,7 @@ exports.signupPostController = async (req, res, next) => {
         //? hashing password
         const hashedPassword = await bcrypt.hash(password, 10);
         //?creating user
-        let user = new user({
+        let user = new User({
             username,
             email,
             password: hashedPassword
@@ -38,9 +38,10 @@ exports.signupPostController = async (req, res, next) => {
         console.log("Created user", createUser)
         res.render('pages/auth/login',
             {
+                title: "Log in page",
                 error: { },
                 value: { email },
-                isLoggedIn: req.session.isLoggedIn
+                isLoggedIn: false//req.session.isLoggedIn
             }
         )
     } catch (error) {
@@ -53,18 +54,18 @@ exports.loginGetController = (req, res, next) => {
         title: "Log in to your account",
         error: { },
         value: { },
-        isLoggedIn: req.session.isLoggedIn
+        isLoggedIn: false//req.session.isLoggedIn
     });
 }
 
 exports.loginPostController = async (req, res, next) => {
-    let { email, password } = req.body();
+    let { email, password } = req.body;
     let error = validationResult(req).formatWith(errorFormatter);
 
     if (!error.isEmpty) {
         return res.render("pages/auth/login", {
             title: "Log in page",
-            error,
+            error: error.mapped(),
             value: { email }
         })
     }
@@ -81,7 +82,8 @@ exports.loginPostController = async (req, res, next) => {
         }
 
         res.render("pages/dashboard/dashboard", {
-            title: ''
+            title: 'my dashboard',
+            isLoggedIn: false//req.session.isLoggedIn
         })
 
     } catch (error) {
