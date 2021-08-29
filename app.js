@@ -3,10 +3,11 @@ const express = require("express");
 const morgan = require('morgan');
 const authRoutes = require("./routes/authRouter");
 const mongoose = require("mongoose");
+const session = require("express-session");
 
 //?constants
 const app = express();
-const PORT = process.env.PORT || 5500
+const PORT = process.env.PORT || 8080
 
 //?view engine
 app.set("view engine", "ejs");
@@ -17,7 +18,10 @@ const middleware = [
     morgan('dev'),
     express.json(),
     express.urlencoded({ extended: true }),
-    express.static("public")
+    express.static("public"),
+    session({
+        secret: process.env.SECRET_KEY || "SECRET_KEY"
+    })
 ]
 
 app.use(middleware);

@@ -16,11 +16,12 @@ exports.signupPostController = async (req, res, next) => {
     let { username, email, password } = req.body;
     let error = validationResult(req).formatWith(errorFormatter);
 
-    if (!error.isEmpty) {
+    if (!error.isEmpty()) {
         return res.render("pages/auth/signup", {
             title: "Create An Account",
             error: error.mapped(),
-            value: { username, email }
+            value: { username, email },
+            isLoggedIn: false
         })
     }
 
@@ -62,11 +63,12 @@ exports.loginPostController = async (req, res, next) => {
     let { email, password } = req.body;
     let error = validationResult(req).formatWith(errorFormatter);
 
-    if (!error.isEmpty) {
+    if (!error.isEmpty()) {
         return res.render("pages/auth/login", {
             title: "Log in page",
             error: error.mapped(),
-            value: { email }
+            value: { email },
+            isLoggedIn: false
         })
     }
     try {
@@ -91,6 +93,7 @@ exports.loginPostController = async (req, res, next) => {
         next(error)
     }
 }
+
 exports.logoutController = (req, res, next) => {
 
 }
