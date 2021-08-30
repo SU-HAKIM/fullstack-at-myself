@@ -17,6 +17,7 @@ exports.signupPostController = async (req, res, next) => {
     let { username, email, password } = req.body;
     let error = validationResult(req).formatWith(errorFormatter);
 
+    req.flash('fail', 'Please check your information!')
     if (!error.isEmpty()) {
         return res.render("pages/auth/signup", {
             title: "Create An Account",
@@ -37,6 +38,8 @@ exports.signupPostController = async (req, res, next) => {
         })
         //? adding user
         await user.save();
+
+        req.flash('success', "user successfully created")
         res.render('pages/auth/login',
             {
                 title: "Log in page",
@@ -63,6 +66,7 @@ exports.loginPostController = async (req, res, next) => {
     let { email, password } = req.body;
     let error = validationResult(req).formatWith(errorFormatter);
 
+    req.flash('fail', 'Please check your information!')
     if (!error.isEmpty()) {
         return res.render("pages/auth/login", {
             title: "Log in page",
@@ -74,6 +78,7 @@ exports.loginPostController = async (req, res, next) => {
     try {
         let user = await User.findOne({ email })
         if (!user) {
+            req.flash('fail', "Invalid credentials")
             return res.render("pages/auth/login", {
                 title: "Log in page",
                 error: { },
@@ -85,6 +90,7 @@ exports.loginPostController = async (req, res, next) => {
         const isEqual = await bcrypt.compare(password, user.password);
 
         if (!isEqual) {
+            req.flash('fail', "Invalid credentials")
             return res.render("pages/auth/login", {
                 title: "Log in page",
                 error: { },
@@ -99,6 +105,8 @@ exports.loginPostController = async (req, res, next) => {
             if (err) {
                 console.log(err)
             }
+
+            req.flash('success', 'successfully logged in')
             res.redirect('/dashboard')
         })
 
@@ -114,6 +122,8 @@ exports.logoutController = async (req, res, next) => {
             console.log(err)
             return next(err)
         }
+
+        req.flash('success', 'user logged in')
         return res.redirect('/auth/login')
     })
 }
