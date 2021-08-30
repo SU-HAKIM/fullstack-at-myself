@@ -30,7 +30,6 @@ app.set("views", "views");
 
 //?middleware
 const middleware = [
-    morgan('dev'),
     express.json(),
     express.urlencoded({ extended: true }),
     express.static("public"),
@@ -45,9 +44,15 @@ const middleware = [
     flash()
 ]
 
+if (app.get('env').toLowerCase() === 'development') {
+    app.use([
+        morgan('dev'),
+    ])
+}
+
 app.use(middleware);
 
-//routes
+//? routes
 app.use('/auth', authRoutes)
 app.use('/dashboard', dashboardRoute);
 
@@ -62,7 +67,9 @@ app.get("/", (req, res) => {
     res.json({ message: "welcome to my app" })
 })
 
+console.log(process.env.NODE_ENV)//!should be removed
 
+//?mongodb connection
 mongoose.connect(MONGODB_URI,
     {
         useNewUrlParser: true
