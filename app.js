@@ -1,4 +1,5 @@
 //? external dependencies
+require('dotenv').config();
 const express = require("express");
 const morgan = require('morgan');
 const mongoose = require("mongoose");
@@ -15,7 +16,7 @@ const dashboardRoute = require('./routes/dashboardRoute');
 //?constants
 const app = express();
 const PORT = process.env.PORT || 8080
-const MONGODB_URI = 'mongodb://localhost:27017/users';
+const MONGODB_URI = `mongodb://localhost:27017/${process.env.DB_NAME}`;
 
 
 //?SESSION STORE
@@ -34,7 +35,7 @@ const middleware = [
     express.urlencoded({ extended: true }),
     express.static("public"),
     session({
-        secret: process.env.SECRET_KEY || "SECRET_KEY",
+        secret: process.env.SECRET_KEY,
         resave: false,
         saveUninitialized: false,
         store: store
@@ -67,7 +68,6 @@ app.get("/", (req, res) => {
     res.json({ message: "welcome to my app" })
 })
 
-console.log(process.env.NODE_ENV)//!should be removed
 
 //?mongodb connection
 mongoose.connect(MONGODB_URI,
