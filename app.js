@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
+const config = require('config');
 
 //?internal imports
 const authRoutes = require("./routes/authRouter");
@@ -16,7 +17,7 @@ const dashboardRoute = require('./routes/dashboardRoute');
 //?constants
 const app = express();
 const PORT = process.env.PORT || 8080
-const MONGODB_URI = `mongodb://localhost:27017/${process.env.DB_NAME}`;
+const MONGODB_URI = `mongodb://localhost:27017/${config.get('db-username')}`;
 
 
 //?SESSION STORE
@@ -35,7 +36,7 @@ const middleware = [
     express.urlencoded({ extended: true }),
     express.static("public"),
     session({
-        secret: process.env.SECRET_KEY,
+        secret: config.get('SECRET_KEY'),
         resave: false,
         saveUninitialized: false,
         store: store
@@ -68,6 +69,7 @@ app.get("/", (req, res) => {
     res.json({ message: "welcome to my app" })
 })
 
+//console.log(config.get('db-username'))//!should be removed
 
 //?mongodb connection
 mongoose.connect(MONGODB_URI,
