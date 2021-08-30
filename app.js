@@ -7,6 +7,14 @@ const session = require("express-session");
 const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 const config = require('config');
+const chalk = require('chalk');
+
+
+const testConsole = require('debug')('app:test');
+const dbConsole = require('debug')('app:db');
+
+testConsole('this is test console')
+dbConsole('this is db console')
 
 //?internal imports
 const authRoutes = require("./routes/authRouter");
@@ -69,7 +77,6 @@ app.get("/", (req, res) => {
     res.json({ message: "welcome to my app" })
 })
 
-//console.log(config.get('db-username'))//!should be removed
 
 //?mongodb connection
 mongoose.connect(MONGODB_URI,
@@ -77,11 +84,11 @@ mongoose.connect(MONGODB_URI,
         useNewUrlParser: true
     })
     .then(() => {
-        console.log("DB connected")
+        console.log(chalk.bgGreen.white.bold("DB connected"))
         //?listening to the server
         app.listen(PORT, () => {
             console.log("listening to the port", PORT)
         })
     }).catch(err => {
-        console.log(er)
+        console.log(err)
     });
