@@ -35,7 +35,6 @@ const middleware = [
 ]
 
 
-
 module.exports = app => {
     app.use(middleware)
 }
