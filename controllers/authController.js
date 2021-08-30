@@ -2,13 +2,14 @@ const User = require("../models/user");
 const bcrypt = require('bcrypt');
 const { validationResult } = require("express-validator");
 const errorFormatter = require("../utils/validationErrorFormatter");
+const Flash = require('../utils/capitalFlash');
 
 exports.signupGetController = (req, res, next) => {
     res.render("pages/auth/signup", {
         title: "Create A New Account",
         error: { },
         value: { },
-        // isLoggedIn: req.session.isLoggedIn
+        flashMessage: Flash.getMessage(req)
     })
 }
 
@@ -21,7 +22,7 @@ exports.signupPostController = async (req, res, next) => {
             title: "Create An Account",
             error: error.mapped(),
             value: { username, email },
-            // isLoggedIn: req.session.isLoggedIn
+            flashMessage: Flash.getMessage(req)
         })
     }
 
@@ -35,14 +36,13 @@ exports.signupPostController = async (req, res, next) => {
             password: hashedPassword
         })
         //? adding user
-        let createUser = await user.save();
-        console.log("Created user", createUser)
+        await user.save();
         res.render('pages/auth/login',
             {
                 title: "Log in page",
                 error: { },
-                value: { },
-                // isLoggedIn: req.session.isLoggedIn
+                value: { email },
+                flashMessage: Flash.getMessage(req)
             }
         )
     } catch (error) {
@@ -55,7 +55,7 @@ exports.loginGetController = (req, res, next) => {
         title: "Log in to your account",
         error: { },
         value: { },
-        // isLoggedIn: req.session.isLoggedIn
+        flashMessage: Flash.getMessage(req)
     });
 }
 
@@ -68,19 +68,29 @@ exports.loginPostController = async (req, res, next) => {
             title: "Log in page",
             error: error.mapped(),
             value: { email },
-            // isLoggedIn: req.session.isLoggedIn
+            flashMessage: Flash.getMessage(req)
         })
     }
     try {
         let user = await User.findOne({ email })
         if (!user) {
-            return res.json({ message: "user not found" })
+            return res.render("pages/auth/login", {
+                title: "Log in page",
+                error: { },
+                value: { email },
+                flashMessage: Flash.getMessage(req)
+            })
         }
 
         const isEqual = await bcrypt.compare(password, user.password);
 
         if (!isEqual) {
-            return res.json({ message: "user not found" })
+            return res.render("pages/auth/login", {
+                title: "Log in page",
+                error: { },
+                value: { email },
+                flashMessage: Flash.getMessage(req)
+            })
         }
 
         req.session.isLoggedIn = true
