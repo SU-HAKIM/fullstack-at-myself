@@ -122,8 +122,6 @@ exports.logoutController = async (req, res, next) => {
             console.log(err)
             return next(err)
         }
-
-        // req.flash('success', 'user logged in')
         return res.redirect('/auth/login')
     })
 }

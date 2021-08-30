@@ -1,26 +1,24 @@
 //? external dependencies
 require('dotenv').config();
 const express = require("express");
-const morgan = require('morgan');
 const mongoose = require("mongoose");
-const session = require("express-session");
-const MongoDBStore = require('connect-mongodb-session')(session);
-const flash = require('connect-flash');
 const config = require('config');
 const chalk = require('chalk');
 
-
+//?debug
 const testConsole = require('debug')('app:test');
 const dbConsole = require('debug')('app:db');
 
 testConsole('this is test console')
 dbConsole('this is db console')
 
-//?internal imports
-const authRoutes = require("./routes/authRouter");
-const { bindUserWithRequest } = require("./middleware/authMiddleware");
-const setLocals = require("./middleware/setLocals");
-const dashboardRoute = require('./routes/dashboardRoute');
+
+
+//?import routes
+const setRoutes = require('./routes/routesModule');
+
+//?middleware
+const setMiddleware = require('./middleware/middleware');
 
 //?constants
 const app = express();
@@ -28,54 +26,15 @@ const PORT = process.env.PORT || 8080
 const MONGODB_URI = `mongodb://localhost:27017/${config.get('db-username')}`;
 
 
-//?SESSION STORE
-const store = new MongoDBStore({
-    uri: MONGODB_URI,
-    collection: 'sessions'
-})
-
 //?view engine
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-//?middleware
-const middleware = [
-    express.json(),
-    express.urlencoded({ extended: true }),
-    express.static("public"),
-    session({
-        secret: config.get('SECRET_KEY'),
-        resave: false,
-        saveUninitialized: false,
-        store: store
-    }),
-    bindUserWithRequest(),
-    setLocals(),
-    flash()
-]
+//?middleware from middleware dir
+setMiddleware(app)
 
-if (app.get('env').toLowerCase() === 'development') {
-    app.use([
-        morgan('dev'),
-    ])
-}
-
-app.use(middleware);
-
-//? routes
-app.use('/auth', authRoutes)
-app.use('/dashboard', dashboardRoute);
-
-//?instance route
-app.get("/", (req, res) => {
-    res.render("pages/auth/signup", {
-        title: "create a new account",
-        error: { },
-        value: { },
-        isLoggedIn: false
-    })
-    res.json({ message: "welcome to my app" })
-})
+//? routes from routes dir
+setRoutes(app);
 
 
 //?mongodb connection
