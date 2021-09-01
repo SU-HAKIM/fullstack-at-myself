@@ -3,21 +3,23 @@
 
     <div class="container-fluid">
         <div class="row">
-                <div class="col-md-10 mx-auto">
-                    <div class="row mx-auto">
-                        <div class="col-md-9 mx-auto my-4">
-                            <div class="card card-body">
-                                <h4>
+            <div class="col-md-10 mx-auto">
+                <div class="row mx-auto">
+                    <div class="col-md-9 mx-auto my-4">
+                        <div class="card card-body">
+                            <h4>
                                 <%= title%>
                             </h4>
                             <div class="profile-pics">
                                 <img src="<%= user.profilePics%>" alt="profile Pics" class='img-thumbnail img-fluid'
                                     id='profilePics'>
-                                    <form action="/uploads/profilePics" class='my-2' id='profilePicsForm'>
-                                        <input type="file" name="profilePics" id="profilePicsFile" accept="image/*">
-                                        <input type="button" value="Remove Pics" class='btn btn-danger btn-sm my-2' id='removeProfilePics' style="display:<%= user.profilePics.includes('default.jpg')?'none':'block'%>">
-                                        <!-- pics -->
-                                    </form>
+                                <form action="/uploads/profilePics" class='my-2' id='profilePicsForm'>
+                                    <input type="file" name="profilePics" id="profilePicsFile" accept="image/*">
+                                    <input type="button" value="Remove Pics" class='btn btn-danger btn-sm my-2'
+                                        id='removeProfilePics'
+                                        style="display:<%= user.profilePics.includes('default.jpg')?'none':'block'%>">
+                                    <!-- pics -->
+                                </form>
                             </div>
                             <div>
                                 <form action="/dashboard/create-profile" method="POST">
@@ -27,7 +29,8 @@
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="email">Enter Your Email : </label>
-                                        <input type="email" name='email' class='form-control' id='email' value='<%= user.email%>' disabled>
+                                        <input type="email" name='email' class='form-control' id='email'
+                                            value='<%= user.email%>' disabled>
                                     </div>
                                     <div class="form-group my-2">
                                         <label for="title">Enter Your Title : </label>
@@ -45,7 +48,8 @@
                                                     <i class="fab fa-2x fa-internet-explorer"></i>
                                                 </span>
                                             </div>
-                                            <input type="text" class='form-control' placeholder="Website Link" name='website'>
+                                            <input type="text" class='form-control' placeholder="Website Link"
+                                                name='website'>
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
@@ -53,7 +57,8 @@
                                                     <i class="fab fa-2x fa-facebook-square"></i>
                                                 </span>
                                             </div>
-                                            <input type="text" class='form-control' placeholder="Facebook Link" name='facebook'>
+                                            <input type="text" class='form-control' placeholder="Facebook Link"
+                                                name='facebook'>
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
@@ -61,7 +66,8 @@
                                                     <i class="fab fa-2x fa-twitter-square"></i>
                                                 </span>
                                             </div>
-                                            <input type="text" class='form-control' placeholder="Twitter Link" name='twitter'>
+                                            <input type="text" class='form-control' placeholder="Twitter Link"
+                                                name='twitter'>
                                         </div>
                                         <div class="input-group mb-3">
                                             <div class="input-group-prepend">
@@ -69,19 +75,47 @@
                                                     <i class="fab fa-2x fa-github-square"></i>
                                                 </span>
                                             </div>
-                                            <input type="text" class='form-control' placeholder="GitHub Link" name='github'>
+                                            <input type="text" class='form-control' placeholder="GitHub Link"
+                                                name='github'>
                                         </div>
                                     </div>
                                 </form>
                             </div>
-                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
+        <!-- modals -->
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            Launch static backdrop modal
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Resize Your Image</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="cropped-image"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Upload</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- modals -->
     </div>
 
     <%- include('../../partials/footer.ejs')%>
         </body>
+        <script src="/scripts/profilePicsUpload.js"></script>
 
         </html>
